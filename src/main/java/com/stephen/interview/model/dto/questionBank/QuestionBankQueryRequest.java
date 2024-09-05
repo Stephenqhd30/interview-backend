@@ -51,6 +51,11 @@ public class QuestionBankQueryRequest extends PageRequest implements Serializabl
      * 创建用户id
      */
     private Long userId;
+    
+    /**
+     * 是否需要查询题目列表
+     */
+    private Boolean needQueryQuestionList;
 
     private static final long serialVersionUID = 1L;
 }

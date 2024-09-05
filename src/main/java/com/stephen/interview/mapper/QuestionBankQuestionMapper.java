@@ -1,7 +1,10 @@
 package com.stephen.interview.mapper;
 
+import com.stephen.interview.model.entity.Question;
 import com.stephen.interview.model.entity.QuestionBankQuestion;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+
+import java.util.List;
 
 /**
 * @author stephen qiu
@@ -10,7 +13,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 * @Entity com.stephen.interview.model.entity.QuestionBankQuestion
 */
 public interface QuestionBankQuestionMapper extends BaseMapper<QuestionBankQuestion> {
-
+	/**
+	 * 根据题库id查询题目列表
+	 */
+	List<Question> getQuestionListByQuestionId(Long questionBankId);
 }
 
 

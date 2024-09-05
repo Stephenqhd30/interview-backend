@@ -15,6 +15,7 @@ import java.util.Date;
 @Data
 public class QuestionFavourVO implements Serializable {
 	
+	private static final long serialVersionUID = -7181209070729195079L;
 	/**
 	 * id
 	 */

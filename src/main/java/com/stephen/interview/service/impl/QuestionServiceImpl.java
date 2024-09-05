@@ -1,33 +1,37 @@
 package com.stephen.interview.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.stephen.interview.common.ErrorCode;
 import com.stephen.interview.constant.CommonConstant;
 import com.stephen.interview.mapper.QuestionFavourMapper;
-import com.stephen.interview.mapper.QuestionThumbMapper;
-import com.stephen.interview.utils.ThrowUtils;
 import com.stephen.interview.mapper.QuestionMapper;
+import com.stephen.interview.mapper.QuestionThumbMapper;
 import com.stephen.interview.model.dto.question.QuestionQueryRequest;
-import com.stephen.interview.model.entity.Question;
-import com.stephen.interview.model.entity.QuestionFavour;
-import com.stephen.interview.model.entity.QuestionThumb;
-import com.stephen.interview.model.entity.User;
+import com.stephen.interview.model.entity.*;
 import com.stephen.interview.model.vo.QuestionVO;
 import com.stephen.interview.model.vo.UserVO;
+import com.stephen.interview.service.QuestionBankQuestionService;
 import com.stephen.interview.service.QuestionService;
 import com.stephen.interview.service.UserService;
 import com.stephen.interview.utils.SqlUtils;
+import com.stephen.interview.utils.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +51,10 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 	
 	@Resource
 	private QuestionFavourMapper questionFavourMapper;
+	
+	
+	@Resource
+	private QuestionBankQuestionService questionBankQuestionService;
 	
 	/**
 	 * 校验数据
@@ -72,7 +80,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 			ThrowUtils.throwIf(title.length() > 80, ErrorCode.PARAMS_ERROR, "标题过长");
 		}
 		if (StringUtils.isNotBlank(content)) {
-			ThrowUtils.throwIf(title.length() > 10240, ErrorCode.PARAMS_ERROR, "内容过长");
+			ThrowUtils.throwIf(content.length() > 10240, ErrorCode.PARAMS_ERROR, "内容过长");
 		}
 	}
 	
@@ -235,4 +243,37 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 		return questionVOPage;
 	}
 	
+	
+	/**
+	 * 分页获取题目列表
+	 *
+	 * @param questionQueryRequest questionQueryRequest
+	 * @return Page<Question>
+	 */
+	@Override
+	public Page<Question> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
+		long current = questionQueryRequest.getCurrent();
+		long size = questionQueryRequest.getPageSize();
+		// 题目表的查询条件
+		QueryWrapper<Question> queryWrapper = this.getQueryWrapper(questionQueryRequest);
+		// 根据题库查询题目列表接口
+		Long questionBankId = questionQueryRequest.getQuestionBankId();
+		if (questionBankId != null) {
+			// 查询题库内的题目 id 列表
+			LambdaQueryWrapper<QuestionBankQuestion> lambdaQueryWrapper = Wrappers.lambdaQuery(QuestionBankQuestion.class)
+					.select(QuestionBankQuestion::getQuestionId)
+					.eq(QuestionBankQuestion::getQuestionBankId, questionBankId);
+			// 查询数据库
+			List<QuestionBankQuestion> questionBankQuestionList = questionBankQuestionService.list(lambdaQueryWrapper);
+			if (CollUtil.isNotEmpty(questionBankQuestionList)) {
+				// 取出题目id集合
+				Set<Long> questionIdSet = questionBankQuestionList.stream()
+						.map(QuestionBankQuestion::getQuestionId)
+						.collect(Collectors.toSet());
+				queryWrapper.in("id", questionIdSet);
+			}
+		}
+		// 查询数据库
+		return this.page(new Page<>(current, size), queryWrapper);
+	}
 }

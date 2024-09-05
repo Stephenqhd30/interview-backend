@@ -6,6 +6,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.stephen.interview.common.ErrorCode;
 import com.stephen.interview.constant.CommonConstant;
+import com.stephen.interview.model.entity.Question;
+import com.stephen.interview.model.entity.QuestionBank;
+import com.stephen.interview.service.QuestionBankService;
+import com.stephen.interview.service.QuestionService;
 import com.stephen.interview.utils.ThrowUtils;
 import com.stephen.interview.mapper.QuestionBankQuestionMapper;
 import com.stephen.interview.model.dto.questionBankQuestion.QuestionBankQuestionQueryRequest;
@@ -57,7 +61,6 @@ public class QuestionBankQuestionServiceImpl extends ServiceImpl<QuestionBankQue
 			ThrowUtils.throwIf(ObjectUtils.isEmpty(questionId), ErrorCode.PARAMS_ERROR, "题目id不能为空");
 		}
 		// 修改数据时，有参数则校验
-		// todo 补充校验规则
 	}
 	
 	/**

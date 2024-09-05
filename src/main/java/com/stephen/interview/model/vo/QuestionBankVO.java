@@ -1,5 +1,7 @@
 package com.stephen.interview.model.vo;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.stephen.interview.model.entity.Question;
 import com.stephen.interview.model.entity.QuestionBank;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +17,7 @@ import java.util.Date;
 @Data
 public class QuestionBankVO implements Serializable {
 	
+	private static final long serialVersionUID = -3719293561347163911L;
 	/**
 	 * id
 	 */
@@ -59,6 +62,11 @@ public class QuestionBankVO implements Serializable {
 	 * 创建用户信息
 	 */
 	private UserVO userVO;
+	
+	/**
+	 * 题库里的题目列表(分页)
+	 */
+	private Page<Question> questionPage;
 	
 	/**
 	 * 封装类转对象

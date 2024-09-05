@@ -17,6 +17,7 @@ import java.util.List;
 @Data
 public class QuestionBankQuestionVO implements Serializable {
 	
+	private static final long serialVersionUID = -7970960776943321491L;
 	/**
 	 * id
 	 */

@@ -1,10 +1,17 @@
 package com.stephen.interview.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.stephen.interview.annotation.AuthCheck;
 import com.stephen.interview.common.BaseResponse;
 import com.stephen.interview.common.DeleteRequest;
 import com.stephen.interview.common.ErrorCode;
+import com.stephen.interview.model.dto.questionBankQuestion.QuestionBankQuestionRemoveRequest;
+import com.stephen.interview.model.entity.Question;
+import com.stephen.interview.model.entity.QuestionBank;
+import com.stephen.interview.service.QuestionBankService;
+import com.stephen.interview.service.QuestionService;
 import com.stephen.interview.utils.ResultUtils;
 import com.stephen.interview.constant.UserConstant;
 import com.stephen.interview.exception.BusinessException;
@@ -18,7 +25,9 @@ import com.stephen.interview.model.vo.QuestionBankQuestionVO;
 import com.stephen.interview.service.QuestionBankQuestionService;
 import com.stephen.interview.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -38,6 +47,12 @@ public class QuestionBankQuestionController {
 	private QuestionBankQuestionService questionBankQuestionService;
 	
 	@Resource
+	private QuestionService questionService;
+	
+	@Resource
+	private QuestionBankService questionBankService;
+	
+	@Resource
 	private UserService userService;
 	
 	// region 增删改查
@@ -50,6 +65,7 @@ public class QuestionBankQuestionController {
 	 * @return BaseResponse<Long>
 	 */
 	@PostMapping("/add")
+	@Transactional(rollbackFor = Exception.class)
 	public BaseResponse<Long> addQuestionBankQuestion(@RequestBody QuestionBankQuestionAddRequest questionBankQuestionAddRequest, HttpServletRequest request) {
 		ThrowUtils.throwIf(questionBankQuestionAddRequest == null, ErrorCode.PARAMS_ERROR);
 		// todo 在此处将实体类和 DTO 进行转换
@@ -57,6 +73,16 @@ public class QuestionBankQuestionController {
 		BeanUtils.copyProperties(questionBankQuestionAddRequest, questionBankQuestion);
 		// 数据校验
 		questionBankQuestionService.validQuestionBankQuestion(questionBankQuestion, true);
+		Long questionId = questionBankQuestion.getQuestionId();
+		Long questionBankId = questionBankQuestion.getQuestionBankId();
+		if (ObjectUtils.isNotEmpty(questionBankId)) {
+			QuestionBank questionBank = questionBankService.getById(questionBankId);
+			ThrowUtils.throwIf(questionBank == null, ErrorCode.NOT_FOUND_ERROR, "题库不存在");
+		}
+		if (ObjectUtils.isNotEmpty(questionId)) {
+			Question question = questionService.getById(questionId);
+			ThrowUtils.throwIf(question == null, ErrorCode.NOT_FOUND_ERROR, "题目不存在");
+		}
 		// todo 填充默认值
 		User loginUser = userService.getLoginUser(request);
 		questionBankQuestion.setUserId(loginUser.getId());
@@ -76,6 +102,7 @@ public class QuestionBankQuestionController {
 	 * @return BaseResponse<Boolean>
 	 */
 	@PostMapping("/delete")
+	@Transactional(rollbackFor = Exception.class)
 	public BaseResponse<Boolean> deleteQuestionBankQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
 		if (deleteRequest == null || deleteRequest.getId() <= 0) {
 			throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -202,4 +229,25 @@ public class QuestionBankQuestionController {
 	}
 	
 	// endregion
+	
+	/**
+	 * 移除题库题目关联
+	 *
+	 * @param questionBankQuestionRemoveRequest questionBankQuestionRemoveRequest
+	 * @param request                           request
+	 * @return BaseResponse<Boolean>
+	 */
+	@PostMapping("/remove")
+	public BaseResponse<Boolean> removeQuestionBankQuestion(@RequestBody QuestionBankQuestionRemoveRequest questionBankQuestionRemoveRequest, HttpServletRequest request) {
+		ThrowUtils.throwIf(questionBankQuestionRemoveRequest == null, ErrorCode.PARAMS_ERROR);
+		Long questionBankId = questionBankQuestionRemoveRequest.getQuestionBankId();
+		Long questionId = questionBankQuestionRemoveRequest.getQuestionId();
+		LambdaQueryWrapper<QuestionBankQuestion> lambdaQueryWrapper = Wrappers.lambdaQuery(QuestionBankQuestion.class)
+				.eq(QuestionBankQuestion::getQuestionBankId, questionBankId)
+				.eq(QuestionBankQuestion::getQuestionId, questionId);
+		// 操作数据库
+		boolean remove = questionBankQuestionService.remove(lambdaQueryWrapper);
+		ThrowUtils.throwIf(!remove, ErrorCode.OPERATION_ERROR);
+		return ResultUtils.success(true);
+	}
 }

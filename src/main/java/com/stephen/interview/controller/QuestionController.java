@@ -6,10 +6,8 @@ import com.stephen.interview.annotation.AuthCheck;
 import com.stephen.interview.common.BaseResponse;
 import com.stephen.interview.common.DeleteRequest;
 import com.stephen.interview.common.ErrorCode;
-import com.stephen.interview.utils.ResultUtils;
 import com.stephen.interview.constant.UserConstant;
 import com.stephen.interview.exception.BusinessException;
-import com.stephen.interview.utils.ThrowUtils;
 import com.stephen.interview.model.dto.question.QuestionAddRequest;
 import com.stephen.interview.model.dto.question.QuestionEditRequest;
 import com.stephen.interview.model.dto.question.QuestionQueryRequest;
@@ -19,6 +17,8 @@ import com.stephen.interview.model.entity.User;
 import com.stephen.interview.model.vo.QuestionVO;
 import com.stephen.interview.service.QuestionService;
 import com.stephen.interview.service.UserService;
+import com.stephen.interview.utils.ResultUtils;
+import com.stephen.interview.utils.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +54,7 @@ public class QuestionController {
 	 * @return BaseResponse<Long>
 	 */
 	@PostMapping("/add")
+	@AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
 	public BaseResponse<Long> addQuestion(@RequestBody QuestionAddRequest questionAddRequest, HttpServletRequest request) {
 		ThrowUtils.throwIf(questionAddRequest == null, ErrorCode.PARAMS_ERROR);
 		// todo 在此处将实体类和 DTO 进行转换
@@ -84,6 +85,7 @@ public class QuestionController {
 	 * @return BaseResponse<Boolean>
 	 */
 	@PostMapping("/delete")
+	@AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
 	public BaseResponse<Boolean> deleteQuestion(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
 		if (deleteRequest == null || deleteRequest.getId() <= 0) {
 			throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -121,7 +123,7 @@ public class QuestionController {
 		List<String> tagList = questionUpdateRequest.getTagList();
 		if (tagList != null) {
 			question.setTags(JSONUtil.toJsonStr(tagList));
-		}		// 数据校验
+		}        // 数据校验
 		questionService.validQuestion(question, false);
 		// 判断是否存在
 		long id = questionUpdateRequest.getId();
@@ -158,11 +160,8 @@ public class QuestionController {
 	@PostMapping("/list/page")
 	@AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
 	public BaseResponse<Page<Question>> listQuestionByPage(@RequestBody QuestionQueryRequest questionQueryRequest) {
-		long current = questionQueryRequest.getCurrent();
-		long size = questionQueryRequest.getPageSize();
-		// 查询数据库
-		Page<Question> questionPage = questionService.page(new Page<>(current, size),
-				questionService.getQueryWrapper(questionQueryRequest));
+		ThrowUtils.throwIf(questionQueryRequest == null, ErrorCode.PARAMS_ERROR);
+		Page<Question> questionPage = questionService.listQuestionByPage(questionQueryRequest);
 		return ResultUtils.success(questionPage);
 	}
 	
@@ -220,6 +219,7 @@ public class QuestionController {
 	 * @return BaseResponse<Boolean>
 	 */
 	@PostMapping("/edit")
+	@AuthCheck(mustRole = UserConstant.ADMIN_ROLE)
 	public BaseResponse<Boolean> editQuestion(@RequestBody QuestionEditRequest questionEditRequest, HttpServletRequest request) {
 		if (questionEditRequest == null || questionEditRequest.getId() <= 0) {
 			throw new BusinessException(ErrorCode.PARAMS_ERROR);
@@ -230,7 +230,7 @@ public class QuestionController {
 		List<String> tagList = questionEditRequest.getTagList();
 		if (tagList != null) {
 			question.setTags(JSONUtil.toJsonStr(tagList));
-		}		// 数据校验
+		}        // 数据校验
 		questionService.validQuestion(question, false);
 		User loginUser = userService.getLoginUser(request);
 		// 判断是否存在

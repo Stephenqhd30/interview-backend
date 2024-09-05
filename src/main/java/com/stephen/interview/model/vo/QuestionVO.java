@@ -17,6 +17,7 @@ import java.util.List;
 @Data
 public class QuestionVO implements Serializable {
 	
+	private static final long serialVersionUID = 4886639736047636709L;
 	/**
 	 * id
 	 */

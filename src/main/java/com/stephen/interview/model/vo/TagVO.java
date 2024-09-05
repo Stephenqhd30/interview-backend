@@ -15,6 +15,7 @@ import java.util.Date;
 @Data
 public class TagVO implements Serializable {
 	
+	private static final long serialVersionUID = -9105082977368215695L;
 	/**
 	 * id
 	 */

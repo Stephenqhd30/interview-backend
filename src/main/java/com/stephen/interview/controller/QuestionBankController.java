@@ -5,20 +5,21 @@ import com.stephen.interview.annotation.AuthCheck;
 import com.stephen.interview.common.BaseResponse;
 import com.stephen.interview.common.DeleteRequest;
 import com.stephen.interview.common.ErrorCode;
+import com.stephen.interview.model.dto.question.QuestionQueryRequest;
+import com.stephen.interview.model.dto.questionBank.*;
+import com.stephen.interview.model.entity.Question;
+import com.stephen.interview.service.QuestionService;
 import com.stephen.interview.utils.ResultUtils;
 import com.stephen.interview.constant.UserConstant;
 import com.stephen.interview.exception.BusinessException;
 import com.stephen.interview.utils.ThrowUtils;
-import com.stephen.interview.model.dto.questionBank.QuestionBankAddRequest;
-import com.stephen.interview.model.dto.questionBank.QuestionBankEditRequest;
-import com.stephen.interview.model.dto.questionBank.QuestionBankQueryRequest;
-import com.stephen.interview.model.dto.questionBank.QuestionBankUpdateRequest;
 import com.stephen.interview.model.entity.QuestionBank;
 import com.stephen.interview.model.entity.User;
 import com.stephen.interview.model.vo.QuestionBankVO;
 import com.stephen.interview.service.QuestionBankService;
 import com.stephen.interview.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +35,9 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/questionBank")
 @Slf4j
 public class QuestionBankController {
+	
+	@Resource
+	private QuestionService questionService;
 	
 	@Resource
 	private QuestionBankService questionBankService;
@@ -125,18 +129,31 @@ public class QuestionBankController {
 	
 	/**
 	 * 根据 id 获取题库（封装类）
+	 * 可以关联查询题目信息
 	 *
-	 * @param id id
+	 * @param questionBankGetVOByIdRequest questionBankGetVOByIdRequest
 	 * @return BaseResponse<QuestionBankVO>
 	 */
 	@GetMapping("/get/vo")
-	public BaseResponse<QuestionBankVO> getQuestionBankVOById(long id, HttpServletRequest request) {
+	public BaseResponse<QuestionBankVO> getQuestionBankVOById(QuestionBankGetVOByIdRequest questionBankGetVOByIdRequest, HttpServletRequest request) {
+		
+		ThrowUtils.throwIf(questionBankGetVOByIdRequest == null, ErrorCode.PARAMS_ERROR);
+		long id = questionBankGetVOByIdRequest.getId();
 		ThrowUtils.throwIf(id <= 0, ErrorCode.PARAMS_ERROR);
 		// 查询数据库
 		QuestionBank questionBank = questionBankService.getById(id);
 		ThrowUtils.throwIf(questionBank == null, ErrorCode.NOT_FOUND_ERROR);
+		QuestionBankVO questionBankVO = questionBankService.getQuestionBankVO(questionBank, request);
+		// 是否需要查询题库列表
+		Boolean needQueryQuestionList = questionBankGetVOByIdRequest.getNeedQueryQuestionList();
+		if (ObjectUtils.isNotEmpty(needQueryQuestionList) && needQueryQuestionList) {
+			QuestionQueryRequest questionQueryRequest = new QuestionQueryRequest();
+			questionQueryRequest.setQuestionBankId(id);
+			Page<Question> questionPage = questionService.listQuestionByPage(questionQueryRequest);
+			questionBankVO.setQuestionPage(questionPage);
+		}
 		// 获取封装类
-		return ResultUtils.success(questionBankService.getQuestionBankVO(questionBank, request));
+		return ResultUtils.success(questionBankVO);
 	}
 	
 	/**

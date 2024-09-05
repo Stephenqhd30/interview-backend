@@ -17,4 +17,17 @@
         id,questionBankId,questionId,
         userId,createTime,updateTime
     </sql>
+    <select id="getQuestionListByQuestionId" resultType="com.stephen.interview.model.entity.Question">
+	    select q.id,
+	           q.title,
+	           q.content,
+	           q.tags,
+	           q.answer,
+	           q.userId,
+	           q.createTime,
+	           q.updateTime
+	    from question_bank_question qbq
+		         join question q on qbq.questionId = q.id
+	    where qbq.questionBankId = #{questionBankId}
+    </select>
 </mapper>

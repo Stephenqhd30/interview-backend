@@ -16,7 +16,8 @@ import java.util.List;
  */
 @Data
 public class QuestionThumbVO implements Serializable {
-
+    
+    private static final long serialVersionUID = -5566128521823277146L;
     /**
      * id
      */
@@ -60,8 +61,8 @@ public class QuestionThumbVO implements Serializable {
     /**
      * 封装类转对象
      *
-     * @param questionThumbVO
-     * @return
+     * @param questionThumbVO questionThumbVO
+     * @return QuestionThumb
      */
     public static QuestionThumb voToObj(QuestionThumbVO questionThumbVO) {
         if (questionThumbVO == null) {
@@ -75,8 +76,8 @@ public class QuestionThumbVO implements Serializable {
     /**
      * 对象转封装类
      *
-     * @param questionThumb
-     * @return
+     * @param questionThumb questionThumb
+     * @return QuestionThumbVO
      */
     public static QuestionThumbVO objToVo(QuestionThumb questionThumb) {
         if (questionThumb == null) {
