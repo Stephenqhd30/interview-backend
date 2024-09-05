@@ -10,6 +10,7 @@ import lombok.Data;
 
 /**
  * 题目收藏
+ * @author stephen qiu
  * @TableName question_favour
  */
 @TableName(value ="question_favour")
@@ -18,7 +19,7 @@ public class QuestionFavour implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

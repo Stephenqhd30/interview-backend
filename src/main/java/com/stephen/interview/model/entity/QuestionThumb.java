@@ -10,6 +10,7 @@ import lombok.Data;
 
 /**
  * 帖子点赞
+ * @author stephen qiu
  * @TableName question_thumb
  */
 @TableName(value ="question_thumb")
@@ -18,7 +19,7 @@ public class QuestionThumb implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

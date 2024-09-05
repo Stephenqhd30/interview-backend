@@ -1,13 +1,24 @@
 package com.stephen.interview.service;
 
-import com.stephen.interview.model.entity.QuestionThumb;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.stephen.interview.model.entity.QuestionThumb;
+import com.stephen.interview.model.entity.User;
+import com.stephen.interview.model.vo.QuestionThumbVO;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
-* @author stephen qiu
-* @description 针对表【question_thumb(帖子点赞)】的数据库操作Service
-* @createDate 2024-09-05 12:30:53
-*/
+ * 题目点赞服务
+ *
+ * @author stephen qiu
+ */
 public interface QuestionThumbService extends IService<QuestionThumb> {
-
+    
+    int doQuestionThumb(long questionId, User loginUser);
+    
+    @Transactional(rollbackFor = Exception.class)
+    int doQuestionThumbInner(long userId, long questionId);
 }
