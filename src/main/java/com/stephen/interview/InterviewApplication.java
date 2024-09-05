@@ -15,10 +15,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @MapperScan("com.stephen.interview.mapper")
 @EnableScheduling
 @EnableAspectJAutoProxy(proxyTargetClass = true, exposeProxy = true)
-public class PopcornApplication {
+public class InterviewApplication {
 	
 	public static void main(String[] args) {
-		SpringApplication.run(PopcornApplication.class, args);
+		SpringApplication.run(InterviewApplication.class, args);
 	}
 	
 }

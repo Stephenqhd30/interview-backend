@@ -39,6 +39,16 @@ public class Question implements Serializable {
      * 推荐答案
      */
     private String answer;
+    
+    /**
+     * 点赞数
+     */
+    private Integer thumbNum;
+    
+    /**
+     * 收藏数
+     */
+    private Integer favourNum;
 
     /**
      * 创建用户 id

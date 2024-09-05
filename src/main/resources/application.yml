@@ -81,7 +81,7 @@ knife4j:
       default:
         api-rule: package
         api-rule-resources:
-          - com.stephen.popcorn.controller
+          - com.stephen.interview.controller
 
 
 
