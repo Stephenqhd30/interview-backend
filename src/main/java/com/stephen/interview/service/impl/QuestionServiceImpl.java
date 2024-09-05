@@ -72,7 +72,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 			ThrowUtils.throwIf(title.length() > 80, ErrorCode.PARAMS_ERROR, "标题过长");
 		}
 		if (StringUtils.isNotBlank(content)) {
-			ThrowUtils.throwIf(title.length() > 4096, ErrorCode.PARAMS_ERROR, "内容过长");
+			ThrowUtils.throwIf(title.length() > 10240, ErrorCode.PARAMS_ERROR, "内容过长");
 		}
 	}
 	
@@ -190,9 +190,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
 			return questionVOPage;
 		}
 		// 对象列表 => 封装对象列表
-		List<QuestionVO> questionVOList = questionList.stream().map(question -> {
-			return QuestionVO.objToVo(question);
-		}).collect(Collectors.toList());
+		List<QuestionVO> questionVOList = questionList.stream().map(QuestionVO::objToVo).collect(Collectors.toList());
 		
 		// todo 可以根据需要为封装对象补充值，不需要的内容可以删除
 		// region 可选

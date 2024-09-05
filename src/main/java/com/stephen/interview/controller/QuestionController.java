@@ -60,7 +60,9 @@ public class QuestionController {
 		Question question = new Question();
 		BeanUtils.copyProperties(questionAddRequest, question);
 		List<String> tagList = questionAddRequest.getTagList();
-		question.setTags(JSONUtil.toJsonStr(tagList));
+		if (tagList != null) {
+			question.setTags(JSONUtil.toJsonStr(tagList));
+		}
 		// 数据校验
 		questionService.validQuestion(question, true);
 		// todo 填充默认值
@@ -117,8 +119,9 @@ public class QuestionController {
 		Question question = new Question();
 		BeanUtils.copyProperties(questionUpdateRequest, question);
 		List<String> tagList = questionUpdateRequest.getTagList();
-		question.setTags(JSONUtil.toJsonStr(tagList));
-		// 数据校验
+		if (tagList != null) {
+			question.setTags(JSONUtil.toJsonStr(tagList));
+		}		// 数据校验
 		questionService.validQuestion(question, false);
 		// 判断是否存在
 		long id = questionUpdateRequest.getId();
@@ -225,8 +228,9 @@ public class QuestionController {
 		Question question = new Question();
 		BeanUtils.copyProperties(questionEditRequest, question);
 		List<String> tagList = questionEditRequest.getTagList();
-		question.setTags(JSONUtil.toJsonStr(tagList));
-		// 数据校验
+		if (tagList != null) {
+			question.setTags(JSONUtil.toJsonStr(tagList));
+		}		// 数据校验
 		questionService.validQuestion(question, false);
 		User loginUser = userService.getLoginUser(request);
 		// 判断是否存在
