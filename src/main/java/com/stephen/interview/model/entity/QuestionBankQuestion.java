@@ -10,6 +10,7 @@ import lombok.Data;
 
 /**
  * 题库题目表（硬删除）
+ * @author stephen qiu
  * @TableName question_bank_question
  */
 @TableName(value ="question_bank_question")
@@ -18,7 +19,7 @@ public class QuestionBankQuestion implements Serializable {
     /**
      * id
      */
-    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     /**
