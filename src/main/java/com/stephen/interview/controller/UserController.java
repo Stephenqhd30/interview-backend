@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 
 import static com.stephen.interview.constant.SaltConstant.SALT;
@@ -296,6 +297,7 @@ public class UserController {
 		User user = new User();
 		BeanUtils.copyProperties(userEditRequest, user);
 		user.setId(loginUser.getId());
+		user.setEditTime(new Date());
 		boolean result = userService.updateById(user);
 		ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
 		return ResultUtils.success(true);

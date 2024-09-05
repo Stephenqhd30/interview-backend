@@ -30,16 +30,6 @@ public class UserVO implements Serializable {
 	 */
 	private Integer userGender;
 	
-	/**
-	 * 开放平台id
-	 */
-	private String unionId;
-	
-	/**
-	 * 公众号openId
-	 */
-	private String mpOpenId;
-	
 	
 	/**
 	 * 用户头像
@@ -66,6 +56,11 @@ public class UserVO implements Serializable {
 	 * 手机号码
 	 */
 	private String userPhone;
+	
+	/**
+	 * 编辑时间
+	 */
+	private Date editTime;
 	
 	/**
 	 * 创建时间
