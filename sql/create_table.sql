@@ -88,10 +88,10 @@ create table question_bank_question
     comment '题库题目表（硬删除）';
 
 -- 题目点赞表（硬删除）
-create table if not exists post_thumb
+create table if not exists question_thumb
 (
     id         bigint auto_increment comment 'id' primary key,
-    questionId     bigint                             not null comment '帖子 id',
+    questionId     bigint                             not null comment '题目 id',
     userId     bigint                             not null comment '创建用户 id',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
@@ -99,17 +99,17 @@ create table if not exists post_thumb
     index idx_userId (userId)
 ) comment '帖子点赞';
 
--- 帖子收藏表（硬删除）
-create table if not exists post_favour
+-- 题目收藏表（硬删除）
+create table if not exists question_favour
 (
     id         bigint auto_increment comment 'id' primary key,
-    questionId     bigint                             not null comment '帖子 id',
+    questionId     bigint                             not null comment '题目 id',
     userId     bigint                             not null comment '创建用户 id',
     createTime datetime default CURRENT_TIMESTAMP not null comment '创建时间',
     updateTime datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     index idx_questionId (questionId),
     index idx_userId (userId)
-) comment '帖子收藏';
+) comment '题目收藏';
 
 -- 标签表
 create table tag

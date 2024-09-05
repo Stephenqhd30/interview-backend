@@ -2,22 +2,23 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.stephen.interview.mapper.TagMapper">
+<mapper namespace="com.stephen.interview.mapper.QuestionBankMapper">
 
-    <resultMap id="BaseResultMap" type="com.stephen.interview.model.entity.Tag">
+    <resultMap id="BaseResultMap" type="com.stephen.interview.model.entity.QuestionBank">
             <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="tagName" column="tagName" jdbcType="VARCHAR"/>
+            <result property="title" column="title" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="picture" column="picture" jdbcType="VARCHAR"/>
             <result property="userId" column="userId" jdbcType="BIGINT"/>
-            <result property="parentId" column="parentId" jdbcType="BIGINT"/>
-            <result property="isParent" column="isParent" jdbcType="TINYINT"/>
+            <result property="editTime" column="editTime" jdbcType="TIMESTAMP"/>
             <result property="createTime" column="createTime" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="updateTime" jdbcType="TIMESTAMP"/>
             <result property="isDelete" column="isDelete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,tagName,userId,
-        parentId,isParent,createTime,
-        updateTime,isDelete
+        id,title,description,
+        picture,userId,editTime,
+        createTime,updateTime,isDelete
     </sql>
 </mapper>
