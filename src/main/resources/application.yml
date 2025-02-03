@@ -61,10 +61,10 @@ mybatis-plus:
 # 对象存储
 cos:
   client:
-    accessKey: AKIDBIMOdpx12udEh1AA1whXN4gBiBf5dDuy
-    secretKey: ggJ416Y1X2YQQksupaAbt20oUY8g7gFi
-    region: ap-shanghai
-    bucket: butterfly-1318299170
+    accessKey: ${cos.client.access-key}
+    secretKey: ${cos.client.access-key}
+    region: ${cos.client.region}
+    bucket: ${cos.client.bucket}
 
 
 # 接口文档配置
@@ -82,7 +82,3 @@ knife4j:
         api-rule: package
         api-rule-resources:
           - com.stephen.interview.controller
-
-
-
-    
