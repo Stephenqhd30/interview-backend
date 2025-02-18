@@ -2,13 +2,9 @@ package com.stephen.interview.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.stephen.interview.annotation.AuthCheck;
-import com.stephen.interview.common.BaseResponse;
-import com.stephen.interview.common.DeleteRequest;
-import com.stephen.interview.common.ErrorCode;
-import com.stephen.interview.utils.ResultUtils;
-import com.stephen.interview.constant.UserConstant;
-import com.stephen.interview.exception.BusinessException;
-import com.stephen.interview.utils.ThrowUtils;
+import com.stephen.interview.common.*;
+import com.stephen.interview.common.exception.BusinessException;
+import com.stephen.interview.constants.UserConstant;
 import com.stephen.interview.model.dto.tag.TagAddRequest;
 import com.stephen.interview.model.dto.tag.TagQueryRequest;
 import com.stephen.interview.model.dto.tag.TagUpdateRequest;

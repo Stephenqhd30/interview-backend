@@ -2,18 +2,15 @@ package com.stephen.interview.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.stephen.interview.annotation.AuthCheck;
-import com.stephen.interview.common.BaseResponse;
-import com.stephen.interview.common.DeleteRequest;
-import com.stephen.interview.common.ErrorCode;
-import com.stephen.interview.constant.UserConstant;
-import com.stephen.interview.exception.BusinessException;
+import com.stephen.interview.common.*;
+import com.stephen.interview.common.exception.BusinessException;
+import com.stephen.interview.constants.SaltConstant;
+import com.stephen.interview.constants.UserConstant;
 import com.stephen.interview.model.dto.user.*;
 import com.stephen.interview.model.entity.User;
 import com.stephen.interview.model.vo.LoginUserVO;
 import com.stephen.interview.model.vo.UserVO;
 import com.stephen.interview.service.UserService;
-import com.stephen.interview.utils.ResultUtils;
-import com.stephen.interview.utils.ThrowUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,10 +21,6 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
-
-import static com.stephen.interview.constant.SaltConstant.SALT;
-import static com.stephen.interview.constant.UserConstant.DEFAULT_PASSWORD;
-import static com.stephen.interview.constant.UserConstant.USER_AVATAR;
 
 
 /**
@@ -136,10 +129,10 @@ public class UserController {
 		userService.validUser(user, true);
 		// todo 填充默认值
 		// 默认密码 12345678
-		String encryptPassword = DigestUtils.md5DigestAsHex((SALT + DEFAULT_PASSWORD).getBytes());
+		String encryptPassword = DigestUtils.md5DigestAsHex((SaltConstant.SALT + UserConstant.DEFAULT_PASSWORD).getBytes());
 		user.setUserPassword(encryptPassword);
 		// 设置一个默认的头像
-		user.setUserAvatar(USER_AVATAR);
+		user.setUserAvatar(UserConstant.USER_AVATAR);
 		// 写入数据库
 		boolean result = userService.save(user);
 		ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);

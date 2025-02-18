@@ -1,6 +1,6 @@
 package com.stephen.interview.common;
 
-import com.stephen.interview.constant.CommonConstant;
+import com.stephen.interview.constants.CommonConstant;
 import lombok.Data;
 
 /**

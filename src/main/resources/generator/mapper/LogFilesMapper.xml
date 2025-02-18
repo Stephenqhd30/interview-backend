@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stephen.interview.mapper.LogFilesMapper">
+
+    <resultMap id="BaseResultMap" type="generator.domain.LogFiles">
+            <id property="id" column="id" />
+            <result property="fileKey" column="fileKey" />
+            <result property="fileName" column="fileName" />
+            <result property="fileOriginalName" column="fileOriginalName" />
+            <result property="fileSuffix" column="fileSuffix" />
+            <result property="fileSize" column="fileSize" />
+            <result property="fileUrl" column="fileUrl" />
+            <result property="fileOssType" column="fileOssType" />
+            <result property="createTime" column="createTime" />
+            <result property="updateTime" column="updateTime" />
+            <result property="isDelete" column="isDelete" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,fileKey,fileName,fileOriginalName,fileSuffix,fileSize,
+        fileUrl,fileOssType,createTime,updateTime,isDelete
+    </sql>
+</mapper>

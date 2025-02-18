@@ -2,7 +2,7 @@ package com.stephen.interview.aop;
 
 import com.stephen.interview.annotation.AuthCheck;
 import com.stephen.interview.common.ErrorCode;
-import com.stephen.interview.exception.BusinessException;
+import com.stephen.interview.common.exception.BusinessException;
 import com.stephen.interview.model.entity.User;
 import com.stephen.interview.model.enums.UserRoleEnum;
 import com.stephen.interview.service.UserService;

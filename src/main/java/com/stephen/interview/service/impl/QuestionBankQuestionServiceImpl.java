@@ -5,12 +5,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.stephen.interview.common.ErrorCode;
-import com.stephen.interview.constant.CommonConstant;
-import com.stephen.interview.model.entity.Question;
-import com.stephen.interview.model.entity.QuestionBank;
-import com.stephen.interview.service.QuestionBankService;
-import com.stephen.interview.service.QuestionService;
-import com.stephen.interview.utils.ThrowUtils;
+import com.stephen.interview.common.ThrowUtils;
+import com.stephen.interview.constants.CommonConstant;
 import com.stephen.interview.mapper.QuestionBankQuestionMapper;
 import com.stephen.interview.model.dto.questionBankQuestion.QuestionBankQuestionQueryRequest;
 import com.stephen.interview.model.entity.QuestionBankQuestion;
@@ -19,15 +15,16 @@ import com.stephen.interview.model.vo.QuestionBankQuestionVO;
 import com.stephen.interview.model.vo.UserVO;
 import com.stephen.interview.service.QuestionBankQuestionService;
 import com.stephen.interview.service.UserService;
-import com.stephen.interview.utils.SqlUtils;
+import com.stephen.interview.utils.sql.SqlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

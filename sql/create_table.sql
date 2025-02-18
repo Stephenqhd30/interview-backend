@@ -127,3 +127,24 @@ create table tag
 )
     comment '标签表';
 
+-- 文件上传日志记录表
+create table log_files
+(
+    id               bigint auto_increment comment 'id'
+        primary key,
+    fileKey          varchar(255)                        not null comment '文件唯一摘要值',
+    fileName         varchar(255)                        not null comment '文件存储名称',
+    fileOriginalName varchar(255)                        not null comment '文件原名称',
+    fileSuffix       varchar(255)                        not null comment '文件扩展名',
+    fileSize         bigint                              not null comment '文件大小',
+    fileUrl          varchar(255)                        not null comment '文件地址',
+    fileOssType      varchar(20)                         not null comment '文件OSS类型',
+    createTime       datetime  default CURRENT_TIMESTAMP not null comment '创建时间',
+    updateTime       timestamp default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
+    isDelete         tinyint   default 0                 not null comment '逻辑删除（0表示未删除，1表示已删除）',
+    constraint log_files_pk
+        unique (fileKey)
+)
+    comment '文件上传日志记录表' collate = utf8mb4_general_ci
+                                 row_format = DYNAMIC;
+

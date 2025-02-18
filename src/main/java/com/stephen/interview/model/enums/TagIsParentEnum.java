@@ -1,5 +1,6 @@
 package com.stephen.interview.model.enums;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.ObjectUtils;
 
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
  * @author stephen qiu
  */
 @Getter
+@AllArgsConstructor
 public enum TagIsParentEnum {
 	
 	NO("否", 0),
@@ -22,15 +24,11 @@ public enum TagIsParentEnum {
 	
 	private final int value;
 	
-	TagIsParentEnum(String text, int value) {
-		this.text = text;
-		this.value = value;
-	}
 	
 	/**
 	 * 获取值列表
 	 *
-	 * @return
+	 * @return {@link List<Integer>}
 	 */
 	public static List<Integer> getValues() {
 		return Arrays.stream(values()).map(item -> item.value).collect(Collectors.toList());
@@ -39,8 +37,8 @@ public enum TagIsParentEnum {
 	/**
 	 * 根据 value 获取枚举
 	 *
-	 * @param value
-	 * @return
+	 * @param value value
+	 * @return {@link TagIsParentEnum}
 	 */
 	public static TagIsParentEnum getEnumByValue(int value) {
 		if (ObjectUtils.isEmpty(value)) {

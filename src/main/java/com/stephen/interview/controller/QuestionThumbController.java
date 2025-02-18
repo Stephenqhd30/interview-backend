@@ -2,12 +2,12 @@ package com.stephen.interview.controller;
 
 import com.stephen.interview.common.BaseResponse;
 import com.stephen.interview.common.ErrorCode;
-import com.stephen.interview.exception.BusinessException;
+import com.stephen.interview.common.ResultUtils;
+import com.stephen.interview.common.exception.BusinessException;
 import com.stephen.interview.model.dto.questionThumb.QuestionThumbAddRequest;
 import com.stephen.interview.model.entity.User;
 import com.stephen.interview.service.QuestionThumbService;
 import com.stephen.interview.service.UserService;
-import com.stephen.interview.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
