@@ -203,6 +203,19 @@
             <artifactId>redisson</artifactId>
             <version>3.22.0</version>
         </dependency>
+        <!-- 星火讯飞API -->
+        <dependency>
+            <groupId>io.github.briqt</groupId>
+            <artifactId>xunfei-spark4j</artifactId>
+            <version>1.2.0</version>
+        </dependency>
+        <!-- 火山引擎 DeepSeekAI -->
+        <!-- https://www.volcengine.com/experience/ark -->
+        <dependency>
+            <groupId>com.volcengine</groupId>
+            <artifactId>volcengine-java-sdk-ark-runtime</artifactId>
+            <version>LATEST</version>
+        </dependency>
         <!-- Netty 依赖配置 -->
         <dependency>
             <groupId>io.netty</groupId>

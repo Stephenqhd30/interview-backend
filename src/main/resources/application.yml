@@ -39,15 +39,15 @@ spring:
   # 邮件配置
   mail:
     # todo 是否开启邮件功能
-    enable: false
+    enable: true
     # 邮件服务器配置
-    host: smtp.163.com
+    host: ${dev.mail.host}
     # 端口号
-    port: 25
+    port: ${dev.mail.port}
     # 发送邮件的邮箱地址
-    username: xxxxxxxx@163.com
+    username: ${dev.mail.username}
     # 发送邮件的邮箱验证密码或者授权码
-    password: xxxxxxxx
+    password: ${dev.mail.password}
     # 邮件默认编码
     default-encoding: UTF-8
     # 邮箱通讯协议
@@ -198,4 +198,16 @@ caffeine:
   # 是否允许空值null作为缓存的value
   allowNullValue: true
 
-
+# 讯飞星火api
+xunfei:
+  # todo 是否开启星火API功能
+  enabled: true
+  client:
+    appid: ${dev.xunfei.client.appid}
+    api-key: ${dev.xunfei.client.api-key}
+    api-secret: ${dev.xunfei.client.api-secret}
+# DeepSeek配置
+deepseek:
+  enabled: true
+  baseUrl: ${dev.deepseek.baseUrl}
+  apiKey: ${dev.deepseek.apiKey}
