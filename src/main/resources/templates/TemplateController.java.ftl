@@ -1,15 +1,14 @@
 package ${packageName}.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import cn.dev33.satoken.annotation.SaCheckRole;
+import ${packageName}.annotation.AuthCheck;
 import ${packageName}.common.BaseResponse;
 import ${packageName}.common.DeleteRequest;
-import ${packageName}.common.ReviewRequest;
 import ${packageName}.common.ErrorCode;
-import ${packageName}.common.ResultUtils;
-import ${packageName}.constants.UserConstant;
-import ${packageName}.common.exception.BusinessException;
-import ${packageName}.common.ThrowUtils;
+import ${packageName}.utils.ResultUtils;
+import ${packageName}.constant.UserConstant;
+import ${packageName}.exception.BusinessException;
+import ${packageName}.utils.ThrowUtils;
 import ${packageName}.model.dto.${dataKey}.${upperDataKey}AddRequest;
 import ${packageName}.model.dto.${dataKey}.${upperDataKey}EditRequest;
 import ${packageName}.model.dto.${dataKey}.${upperDataKey}QueryRequest;
@@ -47,9 +46,9 @@ public class ${upperDataKey}Controller {
     /**
      * 创建${dataName}
      *
-     * @param ${dataKey}AddRequest ${dataKey}AddRequest
-     * @param request request
-     * @return {@link BaseResponse<Long>}
+     * @param ${dataKey}AddRequest
+     * @param request
+     * @return
      */
     @PostMapping("/add")
     public BaseResponse<Long> add${upperDataKey}(@RequestBody ${upperDataKey}AddRequest ${dataKey}AddRequest, HttpServletRequest request) {
@@ -59,7 +58,6 @@ public class ${upperDataKey}Controller {
         BeanUtils.copyProperties(${dataKey}AddRequest, ${dataKey});
         // 数据校验
         ${dataKey}Service.valid${upperDataKey}(${dataKey}, true);
-
         // todo 填充默认值
         User loginUser = userService.getLoginUser(request);
         ${dataKey}.setUserId(loginUser.getId());
@@ -74,9 +72,9 @@ public class ${upperDataKey}Controller {
     /**
      * 删除${dataName}
      *
-     * @param deleteRequest deleteRequest
-     * @param request request
-     * @return {@link BaseResponse<Boolean>}
+     * @param deleteRequest
+     * @param request
+     * @return
      */
     @PostMapping("/delete")
     public BaseResponse<Boolean> delete${upperDataKey}(@RequestBody DeleteRequest deleteRequest, HttpServletRequest request) {
@@ -101,8 +99,8 @@ public class ${upperDataKey}Controller {
     /**
      * 更新${dataName}（仅管理员可用）
      *
-     * @param ${dataKey}UpdateRequest ${dataKey}UpdateRequest
-     * @return {@link BaseResponse<Boolean>}
+     * @param ${dataKey}UpdateRequest
+     * @return
      */
     @PostMapping("/update")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
@@ -115,7 +113,6 @@ public class ${upperDataKey}Controller {
         BeanUtils.copyProperties(${dataKey}UpdateRequest, ${dataKey});
         // 数据校验
         ${dataKey}Service.valid${upperDataKey}(${dataKey}, false);
-
         // 判断是否存在
         long id = ${dataKey}UpdateRequest.getId();
         ${upperDataKey} old${upperDataKey} = ${dataKey}Service.getById(id);
@@ -129,8 +126,8 @@ public class ${upperDataKey}Controller {
     /**
      * 根据 id 获取${dataName}（封装类）
      *
-     * @param id id
-     * @return {@link BaseResponse<${upperDataKey}VO>}
+     * @param id
+     * @return
      */
     @GetMapping("/get/vo")
     public BaseResponse<${upperDataKey}VO> get${upperDataKey}VOById(long id, HttpServletRequest request) {
@@ -145,8 +142,8 @@ public class ${upperDataKey}Controller {
     /**
      * 分页获取${dataName}列表（仅管理员可用）
      *
-     * @param ${dataKey}QueryRequest ${dataKey}QueryRequest
-     * @return {@link BaseResponse<Page<${upperDataKey}>>}
+     * @param ${dataKey}QueryRequest
+     * @return
      */
     @PostMapping("/list/page")
     @SaCheckRole(UserConstant.ADMIN_ROLE)
@@ -162,9 +159,9 @@ public class ${upperDataKey}Controller {
     /**
      * 分页获取${dataName}列表（封装类）
      *
-     * @param ${dataKey}QueryRequest ${dataKey}QueryRequest
-     * @param request request
-     * @return {@link BaseResponse<Page<${upperDataKey}VO>>}
+     * @param ${dataKey}QueryRequest
+     * @param request
+     * @return
      */
     @PostMapping("/list/page/vo")
     public BaseResponse<Page<${upperDataKey}VO>> list${upperDataKey}VOByPage(@RequestBody ${upperDataKey}QueryRequest ${dataKey}QueryRequest,
@@ -183,9 +180,9 @@ public class ${upperDataKey}Controller {
     /**
      * 分页获取当前登录用户创建的${dataName}列表
      *
-     * @param ${dataKey}QueryRequest ${dataKey}QueryRequest
-     * @param request request
-     * @return {@link BaseResponse<Page<${upperDataKey}VO>>}
+     * @param ${dataKey}QueryRequest
+     * @param request
+     * @return
      */
     @PostMapping("/my/list/page/vo")
     public BaseResponse<Page<${upperDataKey}VO>> listMy${upperDataKey}VOByPage(@RequestBody ${upperDataKey}QueryRequest ${dataKey}QueryRequest,
@@ -208,9 +205,9 @@ public class ${upperDataKey}Controller {
     /**
      * 编辑${dataName}（给用户使用）
      *
-     * @param ${dataKey}EditRequest ${dataKey}EditRequest
-     * @param request request
-     * @return {@link BaseResponse<Boolean>}
+     * @param ${dataKey}EditRequest
+     * @param request
+     * @return
      */
     @PostMapping("/edit")
     public BaseResponse<Boolean> edit${upperDataKey}(@RequestBody ${upperDataKey}EditRequest ${dataKey}EditRequest, HttpServletRequest request) {

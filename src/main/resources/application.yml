@@ -2,7 +2,7 @@
 # @author stephen qiu
 spring:
   application:
-    name: trajectory-backend
+    name: interview-backend
   # 默认 dev 环境
   config:
     activate:
@@ -31,80 +31,33 @@ spring:
   # Redis 配置
   # todo 需替换配置，然后取消注释
   redis:
+    enabled: true
     database: ${dev.redis.database}
     host: ${dev.redis.host}
     port: ${dev.redis.port}
     timeout: ${dev.redis.timeout}
-  # Elasticsearch 配置
-  # todo 需替换配置，然后取消注释
-  elasticsearch:
-    uris: ${dev.elasticsearch.uris}
-    username: ${dev.elasticsearch.username}
-    password: ${dev.elasticsearch.password}
-  # RabbitMQ配置
-  rabbitmq:
-    # todo 是否开启RabbitMQ（预先关闭）
-    enable: true
-    host: ${dev.rabbitmq.host}
-    port: ${dev.rabbitmq.port}
-    username: ${dev.rabbitmq.username}
-    password: ${dev.rabbitmq.password}
-    max-await-timeout: 3000
-    # 虚拟主机
-    virtual-host: /
-    # 消息确认（ACK）
-    publisher-confirm-type: correlated #确认消息已发送到交换机(Exchange)
-    publisher-returns: true #确认消息已发送到队列(Queue)
-    template:
-      mandatory: true
-    # 是否手动ACK
-    listener:
-      type: simple
-      direct:
-        acknowledge-mode: manual
-      simple:
-        acknowledge-mode: manual
+  # 邮件配置
+  mail:
+    # todo 是否开启邮件功能
+    enable: false
+    # 邮件服务器配置
+    host: smtp.163.com
+    # 端口号
+    port: 25
+    # 发送邮件的邮箱地址
+    username: xxxxxxxx@163.com
+    # 发送邮件的邮箱验证密码或者授权码
+    password: xxxxxxxx
+    # 邮件默认编码
+    default-encoding: UTF-8
+    # 邮箱通讯协议
+    protocol: smtp
   # 文件上传
   servlet:
     multipart:
       # 大小限制
       max-file-size: 10MB
-server:
-  address: 0.0.0.0
-  port: 8080
-  servlet:
-    context-path: /api
-    # cookie 30 天过期
-    session:
-      cookie:
-        max-age: 2592000
-# MyBatis Plus 配置
-mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: false
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  global-config:
-    db-config:
-      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
-      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
-      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
 
-# 接口文档配置
-knife4j:
-  enable: true
-  openapi:
-    title: "接口文档"
-    version: 1.0
-    description: "StephenQiu的接口文档信息。"
-    concat: "Stephen Qiu"
-    email: "popcornqhd@gmail.com"
-    url: "https://github.com/Stephenqhd30"
-    group:
-      default:
-        api-rule: package
-        api-rule-resources:
-          - com.stephen.trajectory.controller
-          - com.stephen.trajectory.elasticsearch.controller
 
 ############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
 sa-token:
@@ -131,6 +84,76 @@ sa-token:
   # jwt秘钥
   jwt-secret-key: ${dev.sa-token.jwt-secret-key}
 
+# 日志配置
+server:
+  address: 0.0.0.0
+  port: 8080
+  servlet:
+    context-path: /api
+    # cookie 30 天过期
+    session:
+      cookie:
+        max-age: 2592000
+# MyBatis Plus 配置
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
+      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
+      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
+# 微信相关
+wx:
+  enabled: true
+  # 微信公众平台
+  # todo 需替换配置
+  mp:
+    token: xxx
+    aesKey: xxx
+    appId: xxx
+    secret: xxx
+    config-storage:
+      http-client-type: HttpClient
+      key-prefix: wx
+      redis:
+        host: 127.0.0.1
+        port: 6379
+      type: Memory
+  # 微信开放平台
+  # todo 需替换配置
+  open:
+    appId: xxx
+    appSecret: xxx
+
+# 腾讯云COS对象存储配置
+# todo 是否开启
+cos:
+  client:
+    enable: true
+    accessKey: ${dev.cos.client.accessKey}
+    secretKey: ${dev.cos.client.secretKey}
+    region: ${dev.cos.client.region}
+    bucket: ${dev.cos.client.bucket}
+
+# 接口文档配置
+knife4j:
+  enable: true
+  openapi:
+    title: "接口文档"
+    version: 1.0
+    description: "StephenQiu的接口文档信息。"
+    concat: "Stephen Qiu"
+    email: "popcornqhd@gmail.com"
+    url: "https://github.com/Stephenqhd30"
+    group:
+      default:
+        api-rule: package
+        api-rule-resources:
+          - com.stephen.interview.controller
+          - com.stephen.interview.elasticsearch.controller
+
 # Redisson 配置
 redisson:
   enabled: true
@@ -142,7 +165,7 @@ oss:
   # MinIO OSS配置
   minio:
     # todo 是否开启
-    enable: true
+    enable: false
     # 域名（格式：【ip:port】）
     endpoint: ${dev.oss.minio.endpoint}
     # 用户的 AccessKey
@@ -151,25 +174,16 @@ oss:
     secretKey: ${dev.oss.minio.secretKey}
     # 桶名称
     bucket: ${dev.oss.minio.bucket}
-
-# 讯飞星火api
-xunfei:
-  enabled: true
-  client:
-    appid: ${dev.xunfei.client.appid}
-    api-key: ${dev.xunfei.client.api-key}
-    api-secret: ${dev.xunfei.client.api-secret}
-
 # WebSocket配置
 websocket:
   # todo 是否开启（预先关闭）
   enable: false
   # websocket服务端口
-  port: 39999
+  port: ${dev.websocket.port}
   # BOSS线程组线程数
-  boss-thread: 4
+  boss-thread: ${dev.websocket.boss-thread}
   # WORKER线程组线程数
-  worker-thread: 16
+  worker-thread: ${dev.websocket.worker-thread}
 
 #  Caffeine配置
 caffeine:
@@ -183,11 +197,5 @@ caffeine:
   maxCapacity: 1000
   # 是否允许空值null作为缓存的value
   allowNullValue: true
-
-# DeepSeek配置
-deepseek:
-  enabled: true
-  baseUrl: ${dev.deepseek.baseUrl}
-  apiKey: ${dev.deepseek.apiKey}
 
 

@@ -1,156 +1,37 @@
 # 线上配置文件
 # @author stephen qiu
-#
+# 
+server:
+  port: 8101
 spring:
-  application:
-    name: trajectory-backend
-  config:
-    activate:
-      on-profile: prod
-  # 支持 swagger3
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
   # 数据库配置
   # todo 需替换配置
   datasource:
-    driver-class-name: ${prod.mysql.datasource.driver-class-name}
-    url: ${prod.mysql.datasource.url}
-    username: ${prod.mysql.datasource.username}
-    password: ${prod.mysql.datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/interview
+    username: root
+    password: 123456
   # Redis 配置
   # todo 需替换配置
   redis:
-    database: ${prod.redis.database}
-    host: ${prod.redis.host}
-    port: ${prod.redis.port}
-    timeout: ${prod.redis.timeout}
-    password: ${prod.redis.password}
+    database: 1
+    host: localhost
+    port: 6379
+    timeout: 5000
+    password: 123456
   # Elasticsearch 配置
-  # todo 需替换配置，然后取消注释
+  # todo 需替换配置
   elasticsearch:
-    uris: ${prod.elasticsearch.uris}
-    username: ${prod.elasticsearch.username}
-    password: ${prod.elasticsearch.password}
-  # RabbitMQ配置
-  rabbitmq:
-    # todo 是否开启RabbitMQ（预先关闭）
-    enable: true
-    host: ${prod.rabbitmq.host}
-    port: ${prod.rabbitmq.port}
-    username: ${prod.rabbitmq.username}
-    password: ${prod.rabbitmq.password}
-    max-await-timeout: 3000
-    # 虚拟主机
-    virtual-host: /
-    # 消息确认（ACK）
-    publisher-confirm-type: correlated #确认消息已发送到交换机(Exchange)
-    publisher-returns: true #确认消息已发送到队列(Queue)
-    template:
-      mandatory: true
-    # 是否手动ACK
-    listener:
-      type: simple
-      direct:
-        acknowledge-mode: manual
-      simple:
-        acknowledge-mode: manual
-  # 文件上传
-  servlet:
-    multipart:
-      # 大小限制
-      enabled: true
-      max-file-size: 10MB
-      max-request-size: 10MB
-
-
-server:
-  port: ${prod.server.port}
-  servlet:
-    context-path: /api
-    session:
-      cookie:
-        max-age: 2592000
-        domain: ${prod.server.servlet.session.cookie.domain}
+    uris: http://localhost:9200
+    username: root
+    password: 123456
 mybatis-plus:
   configuration:
-    map-underscore-to-camel-case: false
     # 生产环境关闭日志
     log-impl: ''
-  global-config:
-    db-config:
-      logic-delete-field: isDelete # 全局逻辑删除的实体字段名
-      logic-delete-value: 1 # 逻辑已删除值（默认为 1）
-      logic-not-delete-value: 0 # 逻辑未删除值（默认为 0）
-
-# Redisson 配置
-redisson:
-  enabled: true
-  database: ${prod.redisson.database}
-  host: ${prod.redisson.host}
-  port: ${prod.redisson.port}
-  password: ${prod.redisson.password}
-# 对象存储配置
-oss:
-  # MinIO OSS配置
-  minio:
-    # todo 是否开启
+# 接口文档配置
+knife4j:
+  basic:
     enable: true
-    # 域名（格式：【ip:port】）
-    endpoint: ${prod.oss.minio.endpoint}
-    # 用户的 AccessKey
-    accessKey: ${prod.oss.minio.accessKey}
-    # 用户的 SecretKey
-    secretKey: ${prod.oss.minio.secretKey}
-    # 桶名称
-    bucket: ${prod.oss.minio.bucket}
-
-# 讯飞星火api
-xunfei:
-  enabled: true
-  client:
-    appid: ${prod.xunfei.client.appid}
-    api-key: ${prod.xunfei.client.api-key}
-    api-secret: ${prod.xunfei.client.api-secret}
-
-############## Sa-Token 配置 (文档: https://sa-token.cc) ##############
-sa-token:
-  # todo 是否启用SaToken认证鉴权功能（此处为false并不是禁用SaToken，而是让SaToken相关注解失效，预先开启）
-  enable-sa: true
-  # todo 是否使用JWT格式的Token（建议如果没有开启redis配置就不要开启JWT格式的Token，预先关闭）
-  enable-jwt: true
-  # token 名称（同时也是 cookie 名称）
-  token-name: Authorization
-  # token有效期，单位s 默认30天, -1代表永不过期
-  timeout: 2592000
-  # token 最低活跃频率（单位：秒），如果 token 超过此时间没有访问系统就会被冻结，默认-1 代表不限制，永不冻结
-  active-timeout: -1
-  # 是否允许同一账号多地同时登录 （为 true 时允许一起登录, 为 false 时新登录挤掉旧登录）
-  is-concurrent: false
-  # 在多人登录同一账号时，是否共用一个 token （为 true 时所有登录共用一个 token, 为 false 时每次登录新建一个 token）
-  is-share: true
-  # token 风格（默认可取值：uuid、simple-uuid、random-32、random-64、random-128、tik）
-  token-style: uuid
-  # 是否输出操作日志
-  is-log: true
-  # token前缀  注意必须是 Bearer {token}, Bearer后面加空格
-  token-prefix: Bearer
-  # jwt秘钥
-  jwt-secret-key: ${prod.sa-token.jwt-secret-key}
-
-# WebSocket配置
-websocket:
-  # todo 是否开启（预先关闭）
-  enable: false
-  # websocket服务端口
-  port: 39999
-  # BOSS线程组线程数
-  boss-thread: 4
-  # WORKER线程组线程数
-  worker-thread: 16
-
-# DeepSeek配置
-deepseek:
-  enabled: true
-  base-url: ${prod.deepseek.baseUrl}
-  api-key: ${prod.deepseek.apiKey}
+    username: root
+    password: 123456

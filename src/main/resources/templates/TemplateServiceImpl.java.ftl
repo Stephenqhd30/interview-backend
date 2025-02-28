@@ -5,18 +5,19 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ${packageName}.common.ErrorCode;
-import ${packageName}.constants.CommonConstant;
-import ${packageName}.common.ThrowUtils;
+import ${packageName}.constant.CommonConstant;
+import ${packageName}.utils.ThrowUtils;
 import ${packageName}.mapper.${upperDataKey}Mapper;
-import ${packageName}.common.exception.BusinessException;
 import ${packageName}.model.dto.${dataKey}.${upperDataKey}QueryRequest;
 import ${packageName}.model.entity.${upperDataKey};
+import ${packageName}.model.entity.${upperDataKey}Favour;
+import ${packageName}.model.entity.${upperDataKey}Thumb;
 import ${packageName}.model.entity.User;
 import ${packageName}.model.vo.${upperDataKey}VO;
 import ${packageName}.model.vo.UserVO;
 import ${packageName}.service.${upperDataKey}Service;
 import ${packageName}.service.UserService;
-import ${packageName}.utils.sql.SqlUtils;
+import ${packageName}.utils.SqlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,10 +25,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -45,7 +46,7 @@ public class ${upperDataKey}ServiceImpl extends ServiceImpl<${upperDataKey}Mappe
     /**
      * 校验数据
      *
-     * @param ${dataKey} ${dataKey}
+     * @param ${dataKey}
      * @param add      对创建的数据进行校验
      */
     @Override
@@ -68,8 +69,8 @@ public class ${upperDataKey}ServiceImpl extends ServiceImpl<${upperDataKey}Mappe
     /**
      * 获取查询条件
      *
-     * @param ${dataKey}QueryRequest ${dataKey}QueryRequest
-     * @return {@link QueryWrapper<${upperDataKey}>}
+     * @param ${dataKey}QueryRequest
+     * @return
      */
     @Override
     public QueryWrapper<${upperDataKey}> getQueryWrapper(${upperDataKey}QueryRequest ${dataKey}QueryRequest) {
@@ -116,9 +117,9 @@ public class ${upperDataKey}ServiceImpl extends ServiceImpl<${upperDataKey}Mappe
     /**
      * 获取${dataName}封装
      *
-     * @param ${dataKey} ${dataKey}
-     * @param request request
-     * @return {@link ${upperDataKey}VO}
+     * @param ${dataKey}
+     * @param request
+     * @return
      */
     @Override
     public ${upperDataKey}VO get${upperDataKey}VO(${upperDataKey} ${dataKey}, HttpServletRequest request) {
@@ -135,17 +136,34 @@ public class ${upperDataKey}ServiceImpl extends ServiceImpl<${upperDataKey}Mappe
         }
         UserVO userVO = userService.getUserVO(user, request);
         ${dataKey}VO.setUserVO(userVO);
-
+        // 2. 已登录，获取用户点赞、收藏状态
+        long ${dataKey}Id = ${dataKey}.getId();
+        User loginUser = userService.getLoginUserPermitNull(request);
+        if (loginUser != null) {
+            // 获取点赞
+            QueryWrapper<${upperDataKey}Thumb> ${dataKey}ThumbQueryWrapper = new QueryWrapper<>();
+            ${dataKey}ThumbQueryWrapper.in("${dataKey}Id", ${dataKey}Id);
+            ${dataKey}ThumbQueryWrapper.eq("userId", loginUser.getId());
+            ${upperDataKey}Thumb ${dataKey}Thumb = ${dataKey}ThumbMapper.selectOne(${dataKey}ThumbQueryWrapper);
+            ${dataKey}VO.setHasThumb(${dataKey}Thumb != null);
+            // 获取收藏
+            QueryWrapper<${upperDataKey}Favour> ${dataKey}FavourQueryWrapper = new QueryWrapper<>();
+            ${dataKey}FavourQueryWrapper.in("${dataKey}Id", ${dataKey}Id);
+            ${dataKey}FavourQueryWrapper.eq("userId", loginUser.getId());
+            ${upperDataKey}Favour ${dataKey}Favour = ${dataKey}FavourMapper.selectOne(${dataKey}FavourQueryWrapper);
+            ${dataKey}VO.setHasFavour(${dataKey}Favour != null);
+        }
         // endregion
+
         return ${dataKey}VO;
     }
 
     /**
      * 分页获取${dataName}封装
      *
-     * @param ${dataKey}Page ${dataKey}Page
-     * @param request request
-     * @return {@link Page<${upperDataKey}VO>}
+     * @param ${dataKey}Page
+     * @param request
+     * @return
      */
     @Override
     public Page<${upperDataKey}VO> get${upperDataKey}VOPage(Page<${upperDataKey}> ${dataKey}Page, HttpServletRequest request) {
@@ -155,34 +173,49 @@ public class ${upperDataKey}ServiceImpl extends ServiceImpl<${upperDataKey}Mappe
             return ${dataKey}VOPage;
         }
         // 对象列表 => 封装对象列表
-        List<${upperDataKey}VO> ${dataKey}VOList = ${dataKey}List.stream()
-                            .map(${upperDataKey}VO::objToVo)
-                            .collect(Collectors.toList());
+        List<${upperDataKey}VO> ${dataKey}VOList = ${dataKey}List.stream().map(${dataKey} -> {
+            return ${upperDataKey}VO.objToVo(${dataKey});
+        }).collect(Collectors.toList());
+
         // todo 可以根据需要为封装对象补充值，不需要的内容可以删除
         // region 可选
         // 1. 关联查询用户信息
         Set<Long> userIdSet = ${dataKey}List.stream().map(${upperDataKey}::getUserId).collect(Collectors.toSet());
-        // 填充信息
-        if (CollUtil.isNotEmpty(userIdSet)) {
-        CompletableFuture<Map<Long, List<User>>> mapCompletableFuture = CompletableFuture.supplyAsync(() -> userService.listByIds(userIdSet).stream()
-            .collect(Collectors.groupingBy(User::getId)));
-            try { 
-                Map<Long, List<User>> userIdUserListMap = mapCompletableFuture.get();
-                // 填充信息
-                ${dataKey}VOList.forEach(${dataKey}VO -> {
-                    Long userId = ${dataKey}VO.getUserId();
-                    User user = null;
-                    if (userIdUserListMap.containsKey(userId)) {
-                        user = userIdUserListMap.get(userId).get(0);
-                    }
-                    ${dataKey}VO.setUserVO(userService.getUserVO(user, request));
-                });
-            } catch (InterruptedException | ExecutionException e) {
-                Thread.currentThread().interrupt();
-                throw new BusinessException(ErrorCode.SYSTEM_ERROR, "获取信息失败" + e.getMessage());
-            }
+        Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
+                .collect(Collectors.groupingBy(User::getId));
+        // 2. 已登录，获取用户点赞、收藏状态
+        Map<Long, Boolean> ${dataKey}IdHasThumbMap = new HashMap<>();
+        Map<Long, Boolean> ${dataKey}IdHasFavourMap = new HashMap<>();
+        User loginUser = userService.getLoginUserPermitNull(request);
+        if (loginUser != null) {
+            Set<Long> ${dataKey}IdSet = ${dataKey}List.stream().map(${upperDataKey}::getId).collect(Collectors.toSet());
+            loginUser = userService.getLoginUser(request);
+            // 获取点赞
+            QueryWrapper<${upperDataKey}Thumb> ${dataKey}ThumbQueryWrapper = new QueryWrapper<>();
+            ${dataKey}ThumbQueryWrapper.in("${dataKey}Id", ${dataKey}IdSet);
+            ${dataKey}ThumbQueryWrapper.eq("userId", loginUser.getId());
+            List<${upperDataKey}Thumb> ${dataKey}${upperDataKey}ThumbList = ${dataKey}ThumbMapper.selectList(${dataKey}ThumbQueryWrapper);
+            ${dataKey}${upperDataKey}ThumbList.forEach(${dataKey}${upperDataKey}Thumb -> ${dataKey}IdHasThumbMap.put(${dataKey}${upperDataKey}Thumb.get${upperDataKey}Id(), true));
+            // 获取收藏
+            QueryWrapper<${upperDataKey}Favour> ${dataKey}FavourQueryWrapper = new QueryWrapper<>();
+            ${dataKey}FavourQueryWrapper.in("${dataKey}Id", ${dataKey}IdSet);
+            ${dataKey}FavourQueryWrapper.eq("userId", loginUser.getId());
+            List<${upperDataKey}Favour> ${dataKey}FavourList = ${dataKey}FavourMapper.selectList(${dataKey}FavourQueryWrapper);
+            ${dataKey}FavourList.forEach(${dataKey}Favour -> ${dataKey}IdHasFavourMap.put(${dataKey}Favour.get${upperDataKey}Id(), true));
         }
+        // 填充信息
+        ${dataKey}VOList.forEach(${dataKey}VO -> {
+            Long userId = ${dataKey}VO.getUserId();
+            User user = null;
+            if (userIdUserListMap.containsKey(userId)) {
+                user = userIdUserListMap.get(userId).get(0);
+            }
+            ${dataKey}VO.setUserVO(userService.getUserVO(user, request));
+            ${dataKey}VO.setHasThumb(${dataKey}IdHasThumbMap.getOrDefault(${dataKey}VO.getId(), false));
+            ${dataKey}VO.setHasFavour(${dataKey}IdHasFavourMap.getOrDefault(${dataKey}VO.getId(), false));
+        });
         // endregion
+
         ${dataKey}VOPage.setRecords(${dataKey}VOList);
         return ${dataKey}VOPage;
     }

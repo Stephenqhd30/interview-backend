@@ -3,8 +3,6 @@ package ${packageName}.model.vo;
 import cn.hutool.json.JSONUtil;
 import ${packageName}.model.entity.${upperDataKey};
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
-import cn.hutool.core.collection.CollUtil;
 import org.springframework.beans.BeanUtils;
 
 import java.io.Serializable;
@@ -62,8 +60,8 @@ public class ${upperDataKey}VO implements Serializable {
     /**
      * 封装类转对象
      *
-     * @param ${dataKey}VO ${dataKey}VO
-     * @return {@link ${upperDataKey}}
+     * @param ${dataKey}VO
+     * @return
      */
     public static ${upperDataKey} voToObj(${upperDataKey}VO ${dataKey}VO) {
         if (${dataKey}VO == null) {
@@ -72,17 +70,15 @@ public class ${upperDataKey}VO implements Serializable {
         ${upperDataKey} ${dataKey} = new ${upperDataKey}();
         BeanUtils.copyProperties(${dataKey}VO, ${dataKey});
         List<String> tagList = ${dataKey}VO.getTagList();
-        if (CollUtil.isNotEmpty(tagList)) {
-            ${dataKey}.setTags(JSONUtil.toJsonStr(tagList));
-        }
+        ${dataKey}.setTags(JSONUtil.toJsonStr(tagList));
         return ${dataKey};
     }
 
     /**
      * 对象转封装类
      *
-     * @param ${dataKey} ${dataKey}
-     * @return {@link ${upperDataKey}VO}
+     * @param ${dataKey}
+     * @return
      */
     public static ${upperDataKey}VO objToVo(${upperDataKey} ${dataKey}) {
         if (${dataKey} == null) {
@@ -90,9 +86,7 @@ public class ${upperDataKey}VO implements Serializable {
         }
         ${upperDataKey}VO ${dataKey}VO = new ${upperDataKey}VO();
         BeanUtils.copyProperties(${dataKey}, ${dataKey}VO);
-        if (StringUtils.isNotBlank(${dataKey}.getTags())) {
-             ${dataKey}VO.setTagList(JSONUtil.toList(${dataKey}.getTags(), String.class));
-        }
+        ${dataKey}VO.setTagList(JSONUtil.toList(${dataKey}.getTags(), String.class));
         return ${dataKey}VO;
     }
 }
